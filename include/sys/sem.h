@@ -20,18 +20,30 @@
 #ifndef SEM_H_
 #define SEM_H_
 
-	/**
-	 * @brief Comand values for semaphores.
-	 */
-	/**@{*/
-	#define GETVAL   0 /**< Returns the value of a semaphore. */
-	#define SETVAL   1 /**< Sets the value of a semaphore.    */
-	#define IPC_RMID 3 /**< Destroys a semaphore.            */
-	/**@}*/
+/**
+ * @brief Comand values for semaphores.
+ */
+/**@{*/
+#include <nanvix/config.h>
+#include <nanvix/const.h>
+#define GETVAL 0   /**< Returns the value of a semaphore. */
+#define SETVAL 1   /**< Sets the value of a semaphore.    */
+#define IPC_RMID 3 /**< Destroys a semaphore.            */
+/**@}*/
 
-	/* Forward definitions. */
-	extern int semget(unsigned);
-	extern int semctl(int, int, int);
-	extern int semop(int, int);
+struct semaphore
+{
+	unsigned key; /**< Semaphore key. */
+	int id;		  /**< Semaphore ID.  */
+	int value;	  /**< Semaphore value. */
+	int state;	  /**< Semaphore state. */
+};
+
+/* Forward definitions. */
+extern int semget(unsigned);
+extern int semctl(int, int, int);
+extern int semop(int, int);
+
+EXTERN struct sempahore semtab[SEM_LENGTH];
 
 #endif /* SEM_H_ */

@@ -2,6 +2,22 @@
   "files.associations": {
     "pm.h": "c",
     "syscall.h": "c",
-    "errno.h": "c"
+    "errno.h": "c",
+    "sem.h": "c",
+    "times.h": "c",
+    "wait.h": "c",
+    "const.h": "c",
+    "config.h": "c",
+    "thread": "c",
+    "optional": "c",
+    "ratio": "c",
+    "system_error": "c",
+    "array": "c",
+    "functional": "c",
+    "tuple": "c",
+    "type_traits": "c",
+    "utility": "c",
+    "istream": "c",
+    "ostream": "c"
   }
 }

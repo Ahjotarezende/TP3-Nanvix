@@ -267,6 +267,10 @@ EXTERN int sys_gticks(void);
 
 EXTERN int sys_get_process_info(pid_t pid, struct process_buf *buf);
 
+EXTERN int sys_semget(unsigned key);
+
+EXTERN int sys_semop(int id, int op);
+
 #endif /* _ASM_FILE_ */
 
 #endif /* NANVIX_SYSCALL_H_ */
