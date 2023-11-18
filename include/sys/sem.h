@@ -29,6 +29,9 @@
 #define GETVAL 0   /**< Returns the value of a semaphore. */
 #define SETVAL 1   /**< Sets the value of a semaphore.    */
 #define IPC_RMID 3 /**< Destroys a semaphore.            */
+#define SEM_MAX  10  				
+#define SEM_FIRST ((&semtab[0]))			
+#define SEM_LAST ((&semtab[SEM_MAX - 1]))	
 /**@}*/
 
 struct semaphore
