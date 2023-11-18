@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Nanvix. If not, see <http://www.gnu.org/licenses/>.
  */
-#include <nanvix/config.h>
-#include <nanvix/const.h>
 
 #ifndef SEM_H_
 #define SEM_H_
+
+#include <nanvix/config.h>
+#include <nanvix/const.h>
 
 /**
  * @brief Comand values for semaphores.
@@ -40,7 +41,7 @@ struct semaphore
 	int id;		  /**< Semaphore ID.  */
 	int value;	  /**< Semaphore value. */
 	int state;	  /**< Semaphore state. */
-	int priotity; /**< Process priority. */
+	int priority; /**< Process priority. */
 };
 
 /* Forward definitions. */
@@ -48,7 +49,7 @@ extern int semget(unsigned);
 extern int semctl(int, int, int);
 extern int semop(int, int);
 
-EXTERN struct sempahore semtab[SEM_LENGTH];
+EXTERN struct semaphore semtab[SEM_LENGTH];
 
 EXTERN int sem_init();
 

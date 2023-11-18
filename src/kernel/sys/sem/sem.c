@@ -14,4 +14,6 @@ int sem_init()
         semtab[i].state = 0;
         semtab[i].priority = 0;
     }
+
+    return 0;
 }

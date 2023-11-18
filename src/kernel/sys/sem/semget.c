@@ -5,19 +5,20 @@
 #include <sys/sem.h>
 #include <stdio.h>
 
-PUBLIC int sys_semget(int key){
+PUBLIC int sys_semget(int key)
+{
 
     struct semaphore *sem;
 
-    for (sem = SEM_FIRST; sem < SEM_LAST; sem++){
-        if (sem->id == key){
+    for (sem = SEM_FIRST; sem < SEM_LAST; sem++)
+    {
+        if (sem->id == key)
+        {
             return key;
         }
     }
 
-    semtab[key].id = key;          
-    semtab[key].value = SETVAL;      
-    semtab[key].current_value = SETVAL; 
+    semtab[key].id = key;
+    semtab[key].value = SETVAL;
     return key;
-
 }
