@@ -27,6 +27,7 @@
 #include <nanvix/mm.h>
 #include <nanvix/syscall.h>
 #include <fcntl.h>
+#include <sys/sem.h>
 
 /**
  * @brief Forks the current process.
@@ -39,11 +40,10 @@ pid_t fork(void)
 {
 	pid_t pid;
 
-	__asm__ volatile (
+	__asm__ volatile(
 		"int $0x80"
-		: "=a" (pid)
-		: "0" (NR_fork)
-	);
+		: "=a"(pid)
+		: "0"(NR_fork));
 
 	/* Error. */
 	if (pid < 0)
@@ -66,14 +66,13 @@ int execve(const char *filename, const char **argv, const char **envp)
 {
 	int ret;
 
-	__asm__ volatile (
+	__asm__ volatile(
 		"int $0x80"
-		: "=a" (ret)
-		: "0" (NR_execve),
-		  "b" (filename),
-		  "c" (argv),
-		  "d" (envp)
-	);
+		: "=a"(ret)
+		: "0"(NR_execve),
+		  "b"(filename),
+		  "c"(argv),
+		  "d"(envp));
 
 	/* Error. */
 	if (ret)
@@ -92,9 +91,8 @@ void _exit(int status)
 	__asm__ volatile(
 		"int $0x80"
 		: /* empty. */
-		: "a" (NR__exit),
-		"b" (status)
-	);
+		: "a"(NR__exit),
+		  "b"(status));
 }
 
 /**
@@ -102,8 +100,8 @@ void _exit(int status)
  */
 PRIVATE void init(void)
 {
-	const char *argv[] = { "init", "/etc/inittab", NULL };
-	const char *envp[] = { "PATH=/bin:/sbin", "HOME=/", NULL };
+	const char *argv[] = {"init", "/etc/inittab", NULL};
+	const char *envp[] = {"PATH=/bin:/sbin", "HOME=/", NULL};
 
 	execve("/sbin/init", argv, envp);
 }
@@ -113,7 +111,7 @@ PRIVATE void init(void)
  */
 PUBLIC void kmain(void)
 {
-	pid_t pid;         /* Child process ID. */
+	pid_t pid;		   /* Child process ID. */
 	struct process *p; /* Working process.  */
 
 	/* Initialize system modules. */
@@ -121,6 +119,7 @@ PUBLIC void kmain(void)
 	mm_init();
 	pm_init();
 	fs_init();
+	sem_init();
 
 	chkout(DEVID(TTY_MAJOR, 0, CHRDEV));
 	kprintf(KERN_INFO "kout is now initialized");
