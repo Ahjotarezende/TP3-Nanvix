@@ -213,6 +213,7 @@ struct process
 	unsigned alarm;			/**< Alarm.                  */
 	struct process *next;	/**< Next process in a list. */
 	struct process **chain; /**< Sleeping chain.         */
+	int shared_sem[SEM_MAX / 16]; /**< Semaphore table.  */ 
 							/**@}*/
 };
 

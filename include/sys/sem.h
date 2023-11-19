@@ -27,6 +27,10 @@
  * @brief Comand values for semaphores.
  */
 /**@{*/
+
+#define ACTIVE 1
+#define INACTIVE 0
+
 #define GETVAL 0   /**< Returns the value of a semaphore. */
 #define SETVAL 1   /**< Sets the value of a semaphore.    */
 #define IPC_RMID 3 /**< Destroys a semaphore.            */

@@ -1,4 +1,5 @@
 #include <nanvix/const.h>
+#include <nanvix/pm.h>
 #include <sys/sem.h>
 
 int getval (int semaphore_id)
