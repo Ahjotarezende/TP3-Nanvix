@@ -43,5 +43,6 @@
 #define NR_REGIONS 128          /* Number of memory regions.       */
 #define SEM_LENGTH 256          /* Number max of semaphores.       */
 #define NR_BUFFERS 256          /* Number of block buffers.        */
+#define SEM_MAX 128             /* Semaphores max number           */
 
 #endif /* CONFIG_H_ */

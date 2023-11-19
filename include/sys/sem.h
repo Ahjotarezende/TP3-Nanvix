@@ -30,9 +30,6 @@
 #define GETVAL 0   /**< Returns the value of a semaphore. */
 #define SETVAL 1   /**< Sets the value of a semaphore.    */
 #define IPC_RMID 3 /**< Destroys a semaphore.            */
-#define SEM_MAX 10
-#define SEM_FIRST ((&semtab[0]))
-#define SEM_LAST ((&semtab[SEM_MAX - 1]))
 /**@}*/
 
 struct semaphore
@@ -42,6 +39,8 @@ struct semaphore
 	int value;	  /**< Semaphore value. */
 	int state;	  /**< Semaphore state. */
 	int priority; /**< Process priority. */
+	int position; /**< Semaphore position. */
+	int procuse;  /**< Semaphore use. */
 };
 
 /* Forward definitions. */
@@ -52,5 +51,7 @@ extern int semop(int, int);
 EXTERN struct semaphore semtab[SEM_LENGTH];
 
 EXTERN int sem_init();
+
+EXTERN int check_valid (struct semaphore *);
 
 #endif /* SEM_H_ */
