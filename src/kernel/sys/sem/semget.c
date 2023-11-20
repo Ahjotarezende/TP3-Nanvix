@@ -38,7 +38,6 @@ int create_semaphore(unsigned key)
     newsem->value = 1;
     newsem->state = 1;
     newsem->priority = 0;
-    newsem->procuse = 0;
 
     if (addedProcessOnSemaphore(newsem) == -1)
         return -1;
