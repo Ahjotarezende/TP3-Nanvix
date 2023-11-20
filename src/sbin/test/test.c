@@ -31,8 +31,8 @@
 
 /* Test flags. */
 #define EXTENDED (1 << 0)
-#define FULL     (1 << 1)
-#define VERBOSE  (1 << 2)
+#define FULL (1 << 1)
+#define VERBOSE (1 << 2)
 
 /* Test flags. */
 static unsigned flags = VERBOSE | FULL;
@@ -51,23 +51,23 @@ static unsigned flags = VERBOSE | FULL;
  */
 static int swap_test(void)
 {
-	#define N 1280
+#define N 1280
 	int *a, *b, *c;
 	clock_t t0, t1;
 	struct tms timing;
 
 	/* Allocate matrices. */
-	if ((a = malloc(N*N*sizeof(int))) == NULL)
+	if ((a = malloc(N * N * sizeof(int))) == NULL)
 		goto error0;
-	if ((b = malloc(N*N*sizeof(int))) == NULL)
+	if ((b = malloc(N * N * sizeof(int))) == NULL)
 		goto error1;
-	if ((c = malloc(N*N*sizeof(int))) == NULL)
+	if ((c = malloc(N * N * sizeof(int))) == NULL)
 		goto error2;
 
 	t0 = times(&timing);
 
 	/* Initialize matrices. */
-	for (int i = 0; i < N*N; i++)
+	for (int i = 0; i < N * N; i++)
 	{
 		a[i] = 1;
 		b[i] = 1;
@@ -83,7 +83,7 @@ static int swap_test(void)
 			{
 
 				for (int k = 0; k < N; k++)
-					c[i*N + j] += a[i*N + k]*b[k*N + j];
+					c[i * N + j] += a[i * N + k] * b[k * N + j];
 			}
 		}
 	}
@@ -91,7 +91,7 @@ static int swap_test(void)
 	/* Check values. */
 	if (flags & FULL)
 	{
-		for (int i = 0; i < N*N; i++)
+		for (int i = 0; i < N * N; i++)
 		{
 			if (c[i] != N)
 				goto error3;
@@ -129,16 +129,16 @@ error0:
  * @brief I/O testing module.
  *
  * @details Reads sequentially the contents of the hard disk
-            to a in-memory buffer.
+			to a in-memory buffer.
  *
  * @returns Zero if passed on test, and non-zero otherwise.
  */
 static int io_test(void)
 {
-	int fd;            /* File descriptor.    */
+	int fd;			   /* File descriptor.    */
 	struct tms timing; /* Timing information. */
-	clock_t t0, t1;    /* Elapsed times.      */
-	char *buffer;      /* Buffer.             */
+	clock_t t0, t1;	   /* Elapsed times.      */
+	char *buffer;	   /* Buffer.             */
 
 	/* Allocate buffer. */
 	buffer = malloc(MEMORY_SIZE);
@@ -188,7 +188,7 @@ static void work_cpu(void)
 		int a = 1 + i;
 		for (int b = 2; b < i; b++)
 		{
-			if ((i%b) == 0)
+			if ((i % b) == 0)
 				a += b;
 		}
 		c += a;
@@ -200,7 +200,7 @@ static void work_cpu(void)
  */
 static void work_io(void)
 {
-	int fd;            /* File descriptor. */
+	int fd;			   /* File descriptor. */
 	char buffer[2048]; /* Buffer.          */
 
 	/* Open hdd. */
@@ -269,14 +269,14 @@ static int sched_test1(void)
 	/* Parent process. */
 	else if (pid > 0)
 	{
-		nice(-2*NZERO);
+		nice(-2 * NZERO);
 		work_cpu();
 	}
 
 	/* Child process. */
 	else
 	{
-		nice(2*NZERO);
+		nice(2 * NZERO);
 		work_io();
 		_exit(EXIT_SUCCESS);
 	}
@@ -310,14 +310,14 @@ static int sched_test2(void)
 		{
 			if (i & 1)
 			{
-				nice(2*NZERO);
+				nice(2 * NZERO);
 				work_cpu();
 				_exit(EXIT_SUCCESS);
 			}
 
 			else
 			{
-				nice(-2*NZERO);
+				nice(-2 * NZERO);
 				pause();
 				_exit(EXIT_SUCCESS);
 			}
@@ -401,20 +401,20 @@ static int sched_test3(void)
 /**
  * @brief Puts an item in a buffer.
  */
-#define PUT_ITEM(a, b)                                \
-{                                                     \
-	assert(lseek((a), 0, SEEK_SET) != -1);            \
-	assert(write((a), &(b), sizeof(b)) == sizeof(b)); \
-}                                                     \
+#define PUT_ITEM(a, b)                                    \
+	{                                                     \
+		assert(lseek((a), 0, SEEK_SET) != -1);            \
+		assert(write((a), &(b), sizeof(b)) == sizeof(b)); \
+	}
 
 /**
  * @brief Gets an item from a buffer.
  */
-#define GET_ITEM(a, b)                               \
-{                                                    \
-	assert(lseek((a), 0, SEEK_SET) != -1);           \
-	assert(read((a), &(b), sizeof(b)) == sizeof(b)); \
-}                                                    \
+#define GET_ITEM(a, b)                                   \
+	{                                                    \
+		assert(lseek((a), 0, SEEK_SET) != -1);           \
+		assert(read((a), &(b), sizeof(b)) == sizeof(b)); \
+	}
 
 /**
  * @brief Producer-Consumer problem with semaphores.
@@ -425,19 +425,18 @@ static int sched_test3(void)
  */
 int semaphore_test3(void)
 {
-	pid_t pid;                  /* Process ID.              */
-	int buffer_fd;              /* Buffer file descriptor.  */
-	int empty;                  /* Empty positions.         */
-	int full;                   /* Full positions.          */
-	int mutex;                  /* Mutex.                   */
+	pid_t pid;					/* Process ID.              */
+	int buffer_fd;				/* Buffer file descriptor.  */
+	int empty;					/* Empty positions.         */
+	int full;					/* Full positions.          */
+	int mutex;					/* Mutex.                   */
 	const int BUFFER_SIZE = 32; /* Buffer size.             */
-	const int NR_ITEMS = 512;   /* Number of items to send. */
+	const int NR_ITEMS = 512;	/* Number of items to send. */
 
 	/* Create buffer.*/
 	buffer_fd = open("buffer", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
 	if (buffer_fd < 0)
 		return (-1);
-
 	/* Create semaphores. */
 	SEM_CREATE(mutex, 1);
 	SEM_CREATE(empty, 2);
@@ -447,7 +446,6 @@ int semaphore_test3(void)
 	SEM_INIT(full, 0);
 	SEM_INIT(empty, BUFFER_SIZE);
 	SEM_INIT(mutex, 1);
-
 	if ((pid = fork()) < 0)
 		return (-1);
 
@@ -484,7 +482,6 @@ int semaphore_test3(void)
 			SEM_UP(empty);
 		} while (item != (NR_ITEMS - 1));
 	}
-
 	/* Destroy semaphores. */
 	SEM_DESTROY(mutex);
 	SEM_DESTROY(empty);
@@ -633,7 +630,7 @@ static void work_fpu(void)
 		for (int j = 0; j < n; j++)
 		{
 			for (int k = 0; k < n; k++)
-				c[i][j] += a[i][k]*b[k][i];
+				c[i][j] += a[i][k] * b[k][i];
 		}
 	}
 }
@@ -642,13 +639,13 @@ static void work_fpu(void)
  * @brief FPU testing module.
  *
  * @details Performs a floating point operation, while trying to
-            mess up the stack from another process.
+			mess up the stack from another process.
  *
  * @returns Zero if passed on test, and non-zero otherwise.
  */
 int fpu_test(void)
 {
-	pid_t pid;     /* Child process ID.     */
+	pid_t pid;	   /* Child process ID.     */
 	float a = 6.7; /* First dummy operand.  */
 	float b = 1.2; /* Second dummy operand. */
 	float result;  /* Result.               */
@@ -659,8 +656,7 @@ int fpu_test(void)
 		"flds %0;"
 		"fdivrp %%st,%%st(1);"
 		: /* noop. */
-		: "m" (b), "m" (a)
-	);
+		: "m"(b), "m"(a));
 
 	pid = fork();
 
@@ -685,8 +681,7 @@ int fpu_test(void)
 	 */
 	__asm__ volatile(
 		"fstps %0;"
-		: "=m" (result)
-	);
+		: "=m"(result));
 
 	/* 0x40b2aaaa = 6.7/1.2 = 5.5833.. */
 	return (result == 0x40b2aaaa);
@@ -731,7 +726,7 @@ int main(int argc, char **argv)
 		{
 			printf("I/O Test\n");
 			printf("  Result:             [%s]\n",
-				(!io_test()) ? "PASSED" : "FAILED");
+				   (!io_test()) ? "PASSED" : "FAILED");
 		}
 
 		/* Swapping test. */
@@ -739,7 +734,7 @@ int main(int argc, char **argv)
 		{
 			printf("Swapping Test\n");
 			printf("  Result:             [%s]\n",
-				(!swap_test()) ? "PASSED" : "FAILED");
+				   (!swap_test()) ? "PASSED" : "FAILED");
 		}
 
 		/* Scheduling test. */
@@ -752,11 +747,11 @@ int main(int argc, char **argv)
 			printf("Scheduling Tests\n");
 			t0 = times(&timing);
 			printf("  waiting for child  [%s]\n",
-				(!sched_test0()) ? "PASSED" : "FAILED");
+				   (!sched_test0()) ? "PASSED" : "FAILED");
 			printf("  dynamic priorities [%s]\n",
-				(!sched_test1()) ? "PASSED" : "FAILED");
+				   (!sched_test1()) ? "PASSED" : "FAILED");
 			printf("  scheduler stress   [%s]\n",
-				(!sched_test2() && !sched_test3()) ? "PASSED" : "FAILED");
+				   (!sched_test2() && !sched_test3()) ? "PASSED" : "FAILED");
 
 			t1 = times(&timing);
 
@@ -769,7 +764,7 @@ int main(int argc, char **argv)
 		{
 			printf("Interprocess Communication Tests\n");
 			printf("  producer consumer [%s]\n",
-				(!semaphore_test3()) ? "PASSED" : "FAILED");
+				   (!semaphore_test3()) ? "PASSED" : "FAILED");
 		}
 
 		/* FPU test. */
@@ -777,7 +772,7 @@ int main(int argc, char **argv)
 		{
 			printf("Float Point Unit Test\n");
 			printf("  Result [%s]\n",
-				(!fpu_test()) ? "PASSED" : "FAILED");
+				   (!fpu_test()) ? "PASSED" : "FAILED");
 		}
 
 		/* Wrong usage. */

@@ -18,6 +18,14 @@
     "type_traits": "c",
     "utility": "c",
     "istream": "c",
-    "ostream": "c"
+    "ostream": "c",
+    "*.def": "c",
+    "klib.h": "c",
+    "unistd.h": "c",
+    "stdint.h": "c",
+    "ustat.h": "c",
+    "types.h": "c",
+    "stat.h": "c",
+    "minix.h": "c"
   }
 }

@@ -206,15 +206,14 @@ struct process
 	 * @name Scheduling information
 	 */
 	/**@{*/
-	unsigned state;			/**< Current state.          */
-	int counter;			/**< Remaining quantum.      */
-	int priority;			/**< Process priorities.     */
-	int nice;				/**< Nice for scheduling.    */
-	unsigned alarm;			/**< Alarm.                  */
-	struct process *next;	/**< Next process in a list. */
-	struct process **chain; /**< Sleeping chain.         */
-	int shared_sem[SEM_MAX / 16]; /**< Semaphore table.  */ 
-							/**@}*/
+	unsigned state;					 /**< Current state.          */
+	int counter;					 /**< Remaining quantum.      */
+	int priority;					 /**< Process priorities.     */
+	int nice;						 /**< Nice for scheduling.    */
+	unsigned alarm;					 /**< Alarm.                  */
+	struct process *next;			 /**< Next process in a list. */
+	struct process **chain;			 /**< Sleeping chain.         */
+	int shared_sem[SEM_LENGTH / 16]; /**< Tabela de semáforos associados ao processo */
 };
 
 /* Forward definitions. */

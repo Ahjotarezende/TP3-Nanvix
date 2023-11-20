@@ -38,6 +38,7 @@
 
 struct semaphore
 {
+	int pos;	  /**< Semaphore position. */
 	unsigned key; /**< Semaphore key. */
 	int id;		  /**< Semaphore ID.  */
 	int value;	  /**< Semaphore value. */

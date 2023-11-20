@@ -41,8 +41,7 @@
 #define SWAP_DEV 0x0101         /* Swap device number.             */
 #define NR_FILES 256            /* Number of opened files.         */
 #define NR_REGIONS 128          /* Number of memory regions.       */
-#define SEM_LENGTH 256          /* Number max of semaphores.       */
+#define SEM_LENGTH 128          /* Number max of semaphores.       */
 #define NR_BUFFERS 256          /* Number of block buffers.        */
-#define SEM_MAX 128             /* Semaphores max number           */
 
 #endif /* CONFIG_H_ */
