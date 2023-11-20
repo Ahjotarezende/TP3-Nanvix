@@ -27,10 +27,6 @@
  * @brief Comand values for semaphores.
  */
 /**@{*/
-
-#define ACTIVE 1
-#define INACTIVE 0
-
 #define GETVAL 0   /**< Returns the value of a semaphore. */
 #define SETVAL 1   /**< Sets the value of a semaphore.    */
 #define IPC_RMID 3 /**< Destroys a semaphore.            */
@@ -38,14 +34,12 @@
 
 struct semaphore
 {
-	int pos;	  /**< Semaphore position. */
 	unsigned key; /**< Semaphore key. */
 	int id;		  /**< Semaphore ID.  */
 	int value;	  /**< Semaphore value. */
 	int state;	  /**< Semaphore state. */
 	int priority; /**< Process priority. */
 	int position; /**< Semaphore position. */
-	int procuse;  /**< Semaphore use. */
 };
 
 /* Forward definitions. */
@@ -55,8 +49,6 @@ extern int semop(int, int);
 
 EXTERN struct semaphore semtab[SEM_LENGTH];
 
-EXTERN int sem_init();
-
-EXTERN int check_valid (struct semaphore *);
+EXTERN int init_semaphore();
 
 #endif /* SEM_H_ */
