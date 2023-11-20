@@ -49,6 +49,6 @@ extern int semop(int, int);
 
 EXTERN struct semaphore semtab[SEM_LENGTH];
 
-EXTERN int init_semaphore();
+EXTERN int sem_init();
 
 #endif /* SEM_H_ */

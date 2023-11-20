@@ -524,12 +524,10 @@ int semaphore_test2(void)
 	int buff_readers = 0;       /* Number of readers in buff. */
 	const int NR_ITEMS = 512;   /* Number of items to send.   */
     
-    /* Criar buffer.*/
 	buffer_fd = open("buffer", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
 	if (buffer_fd < 0)
 		return (-1);
 
-    /* Criar semáforos. */
 	SEM_CREATE(writer, 1);
 	SEM_CREATE(mutex, 2);
 
@@ -539,43 +537,36 @@ int semaphore_test2(void)
     if ((pid = fork()) < 0)
 		return (-1);
 
-	/* Leitor */
     else if (pid == 0) {
 
         fork();
         fork();
 
-        while (0) {
+        for(int i = 0; i < NR_ITEMS; i++) {
             
 		    int pos = 2;
 
-            /* Entra na Região Crítica */
             SEM_DOWN(mutex);
             buff_readers++; 
 
             if (buff_readers == 1) {
-                /* Colocar o escritor em sleep */
                 SEM_DOWN(writer);
             }
             SEM_UP(mutex);
-            /* Sair */
 
-            /* Lê posição */
             READ_ITEM(buffer_fd, pos);
             
-            /* Entra na Região Crítica */
             SEM_DOWN(mutex);
             buff_readers--; 
 
-            /* Acorda o escritor se não houver mais leitores no buffer */
             if (buff_readers == 0) {
                 SEM_UP(writer);
             }
             SEM_UP(mutex);
         }
+		_exit(EXIT_SUCCESS);
     }
 
-	/* Writer */
 	else
 	{
 		int item = 2;
@@ -592,8 +583,11 @@ int semaphore_test2(void)
 
 		} while (i < NR_ITEMS);
 	}
-    
+	wait(NULL);
 
+	SEM_DESTROY(mutex);
+	SEM_DESTROY(writer);
+    
     close(buffer_fd);
 	unlink("buffer");
 
@@ -764,7 +758,10 @@ int main(int argc, char **argv)
 		{
 			printf("Interprocess Communication Tests\n");
 			printf("  producer consumer [%s]\n",
-				   (!semaphore_test3()) ? "PASSED" : "FAILED");
+				(!semaphore_test3()) ? "PASSED" : "FAILED");
+
+			printf("  writer reader [%s]\n",
+				(!semaphore_test2()) ? "PASSED" : "FAILED");
 		}
 
 		/* FPU test. */

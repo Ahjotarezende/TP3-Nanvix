@@ -5,7 +5,7 @@
 
 PUBLIC struct semaphore semtab[SEM_LENGTH];
 
-int init_semaphore()
+int sem_init()
 {
     for (int i = 0; i < SEM_LENGTH; i++)
     {
