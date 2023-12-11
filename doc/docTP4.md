@@ -5,7 +5,7 @@
 - João Augusto
 
 Neste último trabalho, foi realizado a implementação de dois algoritmos:
-LRU(Least Recently Used) que, na necessidade de retirar uma página de disco da memória, dá prioridade àquelas que não foram acessadas por um maior período de tempo.
+NRU(Not Recently Used) que, na necessidade de retirar uma página de disco da memória, dá prioridade àquelas que não foram acessadas ou modificadas durante um certo período de tempo.
 
 Aging: Modificação do NFU, com adição de contadores que são sempre deslocados um bit para direita antes de serem somados com o bit R, que sempre é adicionado ao bit mais à esquerda do contador, ao invés de ser somado ao mais à direita (No nosso algoritmo foi utilizado um contador comum, onde era incrementado em 1 a cada acesso, e não há a necessidade de soma ao Bit R). A página escolhida para ser removida é a de menor contador.
 
