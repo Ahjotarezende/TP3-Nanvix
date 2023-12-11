@@ -273,6 +273,9 @@ PUBLIC void putkpg(void *kpg)
 /* Number of page frames. */
 #define NR_FRAMES (UMEM_SIZE/PAGE_SIZE)
 
+//Auxiliar calling to check which process is effectively being referenced
+int call = 0;
+
 /**
  * @brief Page frames.
  */
@@ -292,96 +295,87 @@ PRIVATE struct
  */
 PRIVATE int allocf(void)
 {
-	int i; /* Loop index.  */
-	int k = 0;
-	int changed;		  /* changed page. */
-	struct process *proc; /* Process information */
-	struct pte *pg;		  /* Working page table entry. */
+    int i;        /* Loop index.  */
+    int k = 0;
+    int changed; /* changed page. */
+    struct process *proc; /* Process information */
+    struct pte *pg; /* Working page table entry. */
 
-	// Cleaning accessed bit
-	if (chamadas == 20)
-	{
-		for (proc = FIRST_PROC; proc <= LAST_PROC; proc++)
-		{
-			for (i = 0; i < NR_FRAMES; i++)
-			{
-				if (proc->pid == frames[i].owner)
-				{
-					pg = getpte(proc, frames[i].addr);
-					pg->accessed = 0;
+    //Cleaning accessed bit
+    if (call == 20)
+    {
+        for (proc = FIRST_PROC; proc <= LAST_PROC; proc++)
+        {
+            for (i = 0; i < NR_FRAMES; i++)
+            {
+                if (proc->pid == frames[i].owner)
+                {
+                    pg = getpte(proc, frames[i].addr);
+                    pg->accessed = 0;
 
-					// Incrementa a idade de todas as páginas
-					frames[i].age++;
-				}
-			}
-		}
-		chamadas = 0;
-	}
-	else
-		chamadas++;
+                    // Incrementa a idade de todas as páginas
+                    frames[i].age++;
+                }
+            }
+        }
+        call = 0;
+    }
+    else
+        call++;
 
-	/* Search for a free frame. */
-	changed = -1;
+    /* Search for a free frame. */
+    changed = -1;
 
-	for (i = 0; i < NR_FRAMES; i++)
-	{
-		/* Found it. Frame empty.*/
-		if (frames[i].count == 0)
-			goto found;
+    for (i = 0; i < NR_FRAMES; i++)
+    {
+        /* Found it. Frame empty.*/
+        if (frames[i].count == 0)
+            goto found;
 
-		/* Local page replacement policy. */
-		if (frames[i].owner == curr_proc->pid)
-		{
-			/* Skip shared pages. */
-			if (frames[i].count > 1)
-				continue;
+        /* Local page replacement policy. */
+        if (frames[i].owner == curr_proc->pid)
+        {
+            /* Skip shared pages. */
+            if (frames[i].count > 1)
+                continue;
 
-			Expand All
+            // Finding page table
+            pg = getpte(curr_proc, frames[i].addr);
 
-				@ @-333,
-				14 + 343, 21 @ @PRIVATE int allocf(void)
+            // Priority to be changed.
+            if (pg->dirty == 0 && pg->accessed == 0)
+            {
+                changed = k;
+            }
+            else if (pg->dirty == 0 && pg->accessed == 1)
+            {
+                changed = k;
+            }
+            else if (pg->dirty == 1 && pg->accessed == 0)
+            {
+                changed = k;
+            }
+            else if (pg->dirty == 1 && pg->accessed == 1)
+            {
+                changed = k;
+            }
+        }
+    }
 
-						  // Finding page table
-						  pg = getpte(curr_proc, frames[i].addr);
+    /* No frame left. */
+    if (changed < 0)
+        return (-1);
 
-			// Priority to be changed.
-			if (pg->dirty == 0 && pg->accessed == 0)
-			{
-				changed = k;
-			}
-			else if (pg->dirty == 0 && pg->accessed == 1)
-			{
-				changed = k;
-			}
-			else if (pg->dirty == 1 && pg->accessed == 0)
-			{
-				changed = k;
-			}
-			else if (pg->dirty == 1 && pg->accessed == 1)
-			{
-				changed = k;
-			}
-		}
-	}
-
-	Expand All
-
-		@ @-350,
-		15 + 367, 15 @ @PRIVATE int allocf(void)
-
-		/* No frame left. */
-		if (changed < 0) return (-1);
-
-	/* Swap page out. */
-	if (swap_out(curr_proc, frames[k = changed].addr))
-		return (-1);
+    /* Swap page out. */
+    if (swap_out(curr_proc, frames[k = changed].addr))
+        return (-1);
 
 found:
 
-	frames[k].age = 0; // Nova página, reseta a idade
-	frames[k].count = 1;
-	chamadas++;
-	return (k);
+    frames[k].age = 0; // Nova página, reseta a idade
+    frames[k].count = 1;
+    call++;
+    return (k);
 }
 
 /**
