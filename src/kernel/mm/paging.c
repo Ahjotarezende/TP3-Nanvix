@@ -28,6 +28,7 @@
 #include <nanvix/region.h>
 #include <signal.h>
 #include "mm.h"
+#include <nanvix/pm.h>
 
 /*
  * Swapping area too small?
@@ -283,6 +284,8 @@ PRIVATE struct
 	addr_t addr;    /**< Address of the page. */
 } frames[NR_FRAMES] = {{0, 0, 0, 0},  };
 
+int chamadas = 0; /*Vezes que está sendo referenciado*/
+
 /**
  * @brief Allocates a page frame.
  *
@@ -327,8 +330,9 @@ PRIVATE int allocf(void)
 
 found:
 
-	frames[i].age = ticks;
+	frames[i].age = 0; 
 	frames[i].count = 1;
+	chamadas++;
 
 	return (i);
 }
