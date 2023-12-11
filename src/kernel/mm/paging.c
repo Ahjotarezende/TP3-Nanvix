@@ -27,8 +27,8 @@
 #include <nanvix/mm.h>
 #include <nanvix/region.h>
 #include <signal.h>
-#include "mm.h"
 #include <nanvix/pm.h>
+#include "mm.h"
 
 /*
  * Swapping area too small?
@@ -284,8 +284,6 @@ PRIVATE struct
 	addr_t addr;    /**< Address of the page. */
 } frames[NR_FRAMES] = {{0, 0, 0, 0},  };
 
-int chamadas = 0; /*Vezes que está sendo referenciado*/
-
 /**
  * @brief Allocates a page frame.
  *
@@ -294,16 +292,40 @@ int chamadas = 0; /*Vezes que está sendo referenciado*/
  */
 PRIVATE int allocf(void)
 {
-	int i;      /* Loop index.  */
-	int oldest; /* Oldest page. */
+	int i; /* Loop index.  */
+	int k = 0;
+	int changed;		  /* changed page. */
+	struct process *proc; /* Process information */
+	struct pte *pg;		  /* Working page table entry. */
 
-	#define OLDEST(x, y) (frames[x].age < frames[y].age)
+	// Cleaning accessed bit
+	if (chamadas == 20)
+	{
+		for (proc = FIRST_PROC; proc <= LAST_PROC; proc++)
+		{
+			for (i = 0; i < NR_FRAMES; i++)
+			{
+				if (proc->pid == frames[i].owner)
+				{
+					pg = getpte(proc, frames[i].addr);
+					pg->accessed = 0;
+
+					// Incrementa a idade de todas as páginas
+					frames[i].age++;
+				}
+			}
+		}
+		chamadas = 0;
+	}
+	else
+		chamadas++;
 
 	/* Search for a free frame. */
-	oldest = -1;
+	changed = -1;
+
 	for (i = 0; i < NR_FRAMES; i++)
 	{
-		/* Found it. */
+		/* Found it. Frame empty.*/
 		if (frames[i].count == 0)
 			goto found;
 
@@ -314,27 +336,52 @@ PRIVATE int allocf(void)
 			if (frames[i].count > 1)
 				continue;
 
-			/* Oldest page found. */
-			if ((oldest < 0) || (OLDEST(i, oldest)))
-				oldest = i;
+			Expand All
+
+				@ @-333,
+				14 + 343, 21 @ @PRIVATE int allocf(void)
+
+						  // Finding page table
+						  pg = getpte(curr_proc, frames[i].addr);
+
+			// Priority to be changed.
+			if (pg->dirty == 0 && pg->accessed == 0)
+			{
+				changed = k;
+			}
+			else if (pg->dirty == 0 && pg->accessed == 1)
+			{
+				changed = k;
+			}
+			else if (pg->dirty == 1 && pg->accessed == 0)
+			{
+				changed = k;
+			}
+			else if (pg->dirty == 1 && pg->accessed == 1)
+			{
+				changed = k;
+			}
 		}
 	}
 
-	/* No frame left. */
-	if (oldest < 0)
-		return (-1);
+	Expand All
+
+		@ @-350,
+		15 + 367, 15 @ @PRIVATE int allocf(void)
+
+		/* No frame left. */
+		if (changed < 0) return (-1);
 
 	/* Swap page out. */
-	if (swap_out(curr_proc, frames[i = oldest].addr))
+	if (swap_out(curr_proc, frames[k = changed].addr))
 		return (-1);
 
 found:
 
-	frames[i].age = 0; 
-	frames[i].count = 1;
+	frames[k].age = 0; // Nova página, reseta a idade
+	frames[k].count = 1;
 	chamadas++;
-
-	return (i);
+	return (k);
 }
 
 /**
